@@ -1321,7 +1321,7 @@ connectDBbutton.place(x=815,y=0)
 ######################################## buttons of main pages
 from PIL import Image, ImageTk
 
-img1 = Image.open(r"H:\My Drive\project and codes\python projects\sdms\pythonProject\icons\add students.png")
+img1 = Image.open(r"icons/add students.png")
 img1 = img1.resize((120, 120), Image._initialized)
 addstudentphoto = ImageTk.PhotoImage(img1)
 
@@ -1331,7 +1331,7 @@ addlabel = Label(root, text= 'Add Student', font=('chiller',16,'bold'))
 addlabel.place(x=105,y=250)
 
 ## search student
-img2 = Image.open(r"H:\My Drive\project and codes\python projects\sdms\pythonProject\icons\search student 3.png")
+img2 = Image.open(r"icons/search student 3.png")
 img2 = img2.resize((120, 120), Image._initialized)
 searchstudentphoto = ImageTk.PhotoImage(img2)
 
@@ -1341,7 +1341,7 @@ addlabel = Label(root, text= 'Search Student', font=('chiller', 23,'bold'))
 addlabel.place(x=312,y=250)
 
 ## delete student
-img3 = Image.open(r"H:\My Drive\project and codes\python projects\sdms\pythonProject\icons\delete student.png")
+img3 = Image.open(r"icons/delete student.png")
 img3 = img3.resize((120, 120), Image._initialized)
 deletestudentphoto = ImageTk.PhotoImage(img3)
 
@@ -1351,7 +1351,7 @@ addlabel = Label(root, text= 'Delete Student', font=('chiller', 23,'bold'))
 addlabel.place(x=532,y=250)
 
 ## update student
-img4 = Image.open(r"H:\My Drive\project and codes\python projects\sdms\pythonProject\icons\update student 2.png")
+img4 = Image.open(r"icons/update student 2.png")
 img4 = img4.resize((120, 120), Image._initialized)
 updatestudentphoto = ImageTk.PhotoImage(img4)
 
@@ -1361,7 +1361,7 @@ addlabel = Label(root, text= 'Update Student', font=('chiller', 23,'bold'))
 addlabel.place(x=752,y=250)
 
 ## show all details
-img5 = Image.open(r"H:\My Drive\project and codes\python projects\sdms\pythonProject\icons\show details.png")
+img5 = Image.open(r"icons/show details.png")
 img5 = img5.resize((120, 120), Image._initialized)
 showstudentphoto = ImageTk.PhotoImage(img5)
 
@@ -1371,7 +1371,7 @@ addlabel = Label(root, text= 'Show Student Details', font=('chiller', 23,'bold')
 addlabel.place(x=62,y=450)
 
 ## enter student marks
-img6 = Image.open(r"H:\My Drive\project and codes\python projects\sdms\pythonProject\icons\enter marrks 2.png")
+img6 = Image.open(r"icons/enter marrks 2.png")
 img6 = img6.resize((120, 120), Image._initialized)
 enterexamstudentphoto = ImageTk.PhotoImage(img6)
 
@@ -1384,7 +1384,7 @@ addlabel.place(x=323,y=450)
 
 
 ## exit
-img8 = Image.open(r"H:\My Drive\project and codes\python projects\sdms\pythonProject\icons\exit 2.png")
+img8 = Image.open(r"icons/exit 2.png")
 img8 = img8.resize((120, 120), Image._initialized)
 exitstudentphoto = ImageTk.PhotoImage(img8)
 
