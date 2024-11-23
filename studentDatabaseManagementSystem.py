@@ -1,4 +1,5 @@
 ######### ---------------------- main page buttons command
+#asdasdfasfafa
 def addstudent():
     id_manual_flag = False
     def addstudent_submit():
