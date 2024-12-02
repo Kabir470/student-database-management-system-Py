@@ -1,49 +1,97 @@
 ######### ---------------------- main page buttons command
 #asdasdfasfafa
 def addstudent():
+    def nextpage():
+
+        # Open the next window
+        nextroot = Toplevel()
+        nextroot.grab_set()
+        nextroot.geometry('700x550+310+80')
+        nextroot.resizable(False, False)
+        nextroot.config(bg='light blue')
+
+        extraframe = Frame(nextroot, bg='light grey', relief=GROOVE, borderwidth=5)
+        extraframe.place(x=20, y=80, width=650, height=300)
+
+        welcomelabel = Label(nextroot, text='--- Enter Academic Information ---',
+                             font=('chiller', 26, 'bold'), bg='light blue')
+        welcomelabel.pack(side=TOP, pady=10)
+
+        # Fields for academic information
+        academic_fields = {
+            'department': deptval,
+            'intake': intakeval,
+            'Section': secval,
+            'cgpa': cgpaval,
+            'semester': semesterval,
+        }
+
+        for i, (label_text, var) in enumerate(academic_fields.items()):
+            label = Label(extraframe, text=f'{label_text} :', font=('arial', 10, 'bold'), anchor='w', relief=RIDGE,
+                          width=15)
+            label.grid(row=i, column=0, padx=10, pady=10, sticky='w')
+            entry = Entry(extraframe, font=('arial', 13), width=30, textvariable=var)
+            entry.grid(row=i, column=1, padx=10, pady=10)
+
+        # Submit and Cancel Buttons
+        submit_button = Button(nextroot, text='Submit', font=('roman', 11, 'bold'), bg='gold2',
+                               bd=3, relief=RIDGE, command=addstudent_submit, width=15, height=1)
+        submit_button.place(x=100, y=400)
+
+        cancel_button = Button(nextroot, text='Back', font=('roman', 11, 'bold'), bg='gold2',
+                               bd=3, relief=RIDGE, command=nextroot.destroy, width=15, height=1)
+        cancel_button.place(x=480, y=400)
+
     id_manual_flag = False
+
     def addstudent_submit():
-        id = idval.get()
-        name = nameval.get()
-        father_name = fnameval.get()
-        mother_name = mnamval.get()
-        dob=dobval.get()
-        gender=genderval.get()
-        nationality=nationalityval.get()
-        present_address=presentAddressval.get()
-        religion=religionval.get()
-        personal_phn_no=phoneval.get()
-        email=emailval.get()
-        blood_group=bloodval.get()
         try:
+            # Collect values
+            id = idval.get()
+            name = nameval.get()
+            father_name = fnameval.get()
+            mother_name = mnamval.get()
+            dob = dobval.get()
+            gender = genderval.get()
+            nationality = nationalityval.get()
+            present_address = presentAddressval.get()
+            religion = religionval.get()
+            personal_phn_no = phoneval.get()
+            email = emailval.get()
+            blood_group = bloodval.get()
+            department = deptval.get()
+            intake = intakeval.get()
+            section = secval.get()
+            cgpa = cgpaval.get()
+            semester = semesterval.get()
+
+            # Query for database insertion
             query = """
-                            INSERT INTO studentdata 
-                            (id, name, father_name, mother_name, dob, gender, nationality, present_address, religion, personal_phn_no, email, blood_group)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                        """
-            values = (
-            id, name, father_name, mother_name, dob, gender, nationality, present_address, religion, personal_phn_no,
-            email, blood_group)
+                   INSERT INTO studentdata 
+                   (id, name, father_name, mother_name, dob, gender, nationality, present_address, religion, 
+                    personal_phn_no, email, blood_group,department, intake, section, cgpa, semester)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+               """
+            values = (id, name, father_name, mother_name, dob, gender, nationality, present_address, religion,
+                      personal_phn_no, email, blood_group, department, intake, section, cgpa, semester)
 
-            # Execute query
+            # Uncomment when connected to the database
             mycursor.execute(query, values)
-
             con.commit()
-            res=messagebox.askyesnocancel('query','Did you enter the information correctly and proceed to submit?',parent= addroot)
-            if(res==True):
+
+            # Confirmation
+            res = messagebox.askyesnocancel('Confirm', 'Did you enter the information correctly?', parent=addroot)
+            if res:
                 if not id_manual_flag:
                     serial_number = get_serial_number()
                     new_serial_number = increment_serial_number(serial_number)
                     idval.set(new_serial_number)
-                    print(new_serial_number)
-                    addroot.destroy()
-            #datas = mycursor.fetchall()
-            #mycursor.execute(res)
+                messagebox.showinfo('Success', 'Student information saved successfully!', parent=addroot)
+                addroot.destroy()
+
         except Exception as e:
-            # Show error with exception details
+            # Show error
             messagebox.showerror('Error', f"An error occurred: {e}", parent=addroot)
-
-
 
     def addstudent_cancel():
         addroot.destroy()
@@ -118,8 +166,8 @@ def addstudent():
 
 
     ##--------- submit and home button
-    submitButton = Button(addroot, text='Submit', font=('roman', 11, 'bold'),command=addstudent_submit, bg='gold2', bd=3, relief=RIDGE,borderwidth=3, width=15, height=1)
-    submitButton.pack(side= TOP,pady=18, padx= 134,anchor='w',expand= True)
+    nextpageButton = Button(addroot, text='Next Page', font=('roman', 11, 'bold'),command=nextpage, bg='gold2', bd=3, relief=RIDGE,borderwidth=3, width=15, height=1)
+    nextpageButton.pack(side= TOP,pady=18, padx= 134,anchor='w',expand= True)
 
     cancelfromaddstudentbutton_home = Button(addroot, text='Cancel', font=('roman', 11, 'bold'),command=addstudent_cancel, bg='gold2', bd=3, relief=RIDGE,borderwidth=3, width=15, height=1)
     cancelfromaddstudentbutton_home.place(x= 450,y= 490)
@@ -139,6 +187,11 @@ def addstudent():
     phoneval= StringVar()
     emailval= StringVar()
     bloodval= StringVar()
+    deptval= StringVar()
+    intakeval= StringVar()
+    secval= StringVar()
+    cgpaval= StringVar()
+    semesterval= StringVar()
 
     def id_manually():
         nonlocal id_manual_flag
@@ -197,15 +250,16 @@ def addstudent():
 def  searchstudent():
     def searchAll():
         try:
-            str1= 'select * from studentdata'
+            str1 = 'SELECT * FROM studentdata'
             mycursor.execute(str1)
             datas = mycursor.fetchall()
             searchstudenttable.delete(*searchstudenttable.get_children())
             for i in datas:
-                val = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9], i[10], i[11]]
+                val = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9], i[10], i[11], i[12], i[13], i[14],
+                       i[15], i[16]]
                 searchstudenttable.insert('', END, values=val)
         except:
-            messagebox.showerror('Error','Connect to your database')
+            messagebox.showerror('Error', 'Connect to your database')
             searchroot.destroy()
 
 
@@ -218,50 +272,31 @@ def  searchstudent():
         religion=religionval.get()
         blood_group=bloodval.get()
 
-        if id != '':
-            str1= 'SELECT * FROM studentdata WHERE id=%s'
-            mycursor.execute(str1,(id,))
-            datas= mycursor.fetchall()
-            searchstudenttable.delete(*searchstudenttable.get_children())
-            for i in datas:
-                val=[i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],i[9],i[10],i[11]]
-                searchstudenttable.insert('',END,values=val)
-
-        if name != '':
-            str1 = 'SELECT * FROM studentdata WHERE name LIKE %s'
-            name_search = f"%{name}%"
-            mycursor.execute(str1, (name_search,))
+        query_conditions = []
+        query_values = []
+        if id:
+            query_conditions.append("id=%s")
+            query_values.append(id)
+        if name:
+            query_conditions.append("name LIKE %s")
+            query_values.append(f"%{name}%")
+        if gender:
+            query_conditions.append("gender=%s")
+            query_values.append(gender)
+        if religion:
+            query_conditions.append("religion=%s")
+            query_values.append(religion)
+        if blood_group:
+            query_conditions.append("blood_group=%s")
+            query_values.append(blood_group)
+        if query_conditions:
+            query_string = f"SELECT * FROM studentdata WHERE {' AND '.join(query_conditions)}"
+            mycursor.execute(query_string, tuple(query_values))
             datas = mycursor.fetchall()
             searchstudenttable.delete(*searchstudenttable.get_children())
             for i in datas:
-                val = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9], i[10], i[11]]
-                searchstudenttable.insert('', END, values=val)
-
-        if gender != '':
-            str1 = 'SELECT * FROM studentdata WHERE gender=%s'
-            mycursor.execute(str1, (gender,))
-            datas = mycursor.fetchall()
-            searchstudenttable.delete(*searchstudenttable.get_children())
-            for i in datas:
-                val = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9], i[10], i[11]]
-                searchstudenttable.insert('', END, values=val)
-
-        if religion != '':
-            str1 = 'SELECT * FROM studentdata WHERE religion=%s'
-            mycursor.execute(str1, (religion,))
-            datas = mycursor.fetchall()
-            searchstudenttable.delete(*searchstudenttable.get_children())
-            for i in datas:
-                val = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9], i[10], i[11]]
-                searchstudenttable.insert('', END, values=val)
-
-        if blood_group != '':
-            str1 = 'SELECT * FROM studentdata WHERE blood_group=%s'
-            mycursor.execute(str1, (blood_group,))
-            datas = mycursor.fetchall()
-            searchstudenttable.delete(*searchstudenttable.get_children())
-            for i in datas:
-                val = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9], i[10], i[11]]
+                val = [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9], i[10], i[11], i[12], i[13], i[14],
+                       i[15], i[16]]
                 searchstudenttable.insert('', END, values=val)
 
     def searchstudent_cancel():
@@ -353,42 +388,23 @@ def  searchstudent():
     ##################################search student table
     style= ttk.Style()
     style.configure('Treeview.Heading',font=('times',13,'bold'),foreground= 'blue',background= 'ash')
-    style.configure('Treeview',font=('times',12,'bold'),foreground= 'black',background='cyan')
+    style.configure('Treeview',font=('times',12,'bold'),foreground= 'black',background='light green')
     scroll_x= Scrollbar(rightFrame, orient=HORIZONTAL)
     scroll_y=Scrollbar(rightFrame,orient=VERTICAL)
     scroll_x.pack(side=BOTTOM,fill=X)
     scroll_y.pack(side=RIGHT,fill=Y)
 
-    searchstudenttable = Treeview(rightFrame,columns=('Id','Name',"Mother's name","Father's name",'Date of Birth','Gender','Nationality','Present Address','Religion','Personal Phn No','Email','Blood Group'),yscrollcommand= scroll_y.set, xscrollcommand= scroll_x.set)
+    searchstudenttable = Treeview(rightFrame,columns=('Id', 'Name', "Mother's Name", "Father's Name", 'Date of Birth', 'Gender', 'Nationality', 'Present Address',
+        'Religion', 'Personal Phn No', 'Email', 'Blood Group', 'semester', 'department','intake', 'section', 'cgpa'),yscrollcommand= scroll_y.set, xscrollcommand= scroll_x.set)
     scroll_x.config(command=searchstudenttable.xview)
     scroll_y.config(command=searchstudenttable.yview)
 
-    searchstudenttable.heading('Id',text='Id')
-    searchstudenttable.heading('Name',text='Name')
-    searchstudenttable.heading("Mother's name",text="Mother's name")
-    searchstudenttable.heading("Father's name",text="Father's name")
-    searchstudenttable.heading('Date of Birth',text='Date of Birth')
-    searchstudenttable.heading('Gender',text='Gender')
-    searchstudenttable.heading('Nationality',text='Nationality')
-    searchstudenttable.heading('Present Address',text='Present Address')
-    searchstudenttable.heading('Religion',text='Religion')
-    searchstudenttable.heading('Personal Phn No',text='Personal Phn No')
-    searchstudenttable.heading('Email',text='Email')
-    searchstudenttable.heading('Blood Group',text='Blood Group')
-    searchstudenttable['show']= 'headings'
-    searchstudenttable.column('Id',width=100)
-    searchstudenttable.column('Name',width=200)
-    searchstudenttable.column("Mother's name",width=150)
-    searchstudenttable.column("Father's name",width=150)
-    searchstudenttable.column('Date of Birth',width=100)
-    searchstudenttable.column('Gender',width=100)
-    searchstudenttable.column('Nationality',width=100)
-    searchstudenttable.column('Present Address',width=400)
-    searchstudenttable.column('Religion',width=100)
-    searchstudenttable.column('Personal Phn No',width=100)
-    searchstudenttable.column('Email',width=100)
-    searchstudenttable.column('Blood Group',width=100)
-    searchstudenttable.pack(fill=BOTH,expand= 1)
+    for col in searchstudenttable['columns']:
+        searchstudenttable.heading(col, text=col)
+        searchstudenttable.column(col, width=100)
+
+    searchstudenttable['show'] = 'headings'
+    searchstudenttable.pack(fill=BOTH, expand=1)
 
     searchroot.mainloop()
 
@@ -569,7 +585,7 @@ def deletestudent():
     ##################################search student table
     style = ttk.Style()
     style.configure('Treeview.Heading', font=('times', 13, 'bold'), foreground='blue', background='ash')
-    style.configure('Treeview', font=('times', 12, 'bold'), foreground='black', background='cyan')
+    style.configure('Treeview', font=('times', 12, 'bold'), foreground='black', background='light green')
     scroll_x = Scrollbar(rightFrame, orient=HORIZONTAL)
     scroll_y = Scrollbar(rightFrame, orient=VERTICAL)
     scroll_x.pack(side=BOTTOM, fill=X)
@@ -910,22 +926,77 @@ def examstudent():
         except Exception as e:
             messagebox.showerror('Error', f'Could not fetch data: {str(e)}')'''
     def advanceViewbutton():
-
         def advncesearchbutton():
-            pass
+            id = idval.get()
+
+            if not id:
+                messagebox.showwarning('Input Error', 'Please enter an ID to search')
+                return
+
+            try:
+                # Query to fetch student data
+                query = "SELECT * FROM studentdata WHERE id = %s"
+                query1 = "SELECT * FROM examdata WHERE id = %s"
+
+                # Execute the first query
+                mycursor.execute(query, (id,))
+                student_data = mycursor.fetchone()  # Fetch one row for student data
+
+                # Check if student data is found
+                if not student_data:
+                    messagebox.showerror('Error', 'Student not found for the given ID')
+                    return
+
+                # Execute the second query
+                mycursor.execute(query1, (id,))
+                exam_data = mycursor.fetchall()  # Fetch all rows for exam data
+
+                # Update TreeView with exam data
+                advnctreetable.delete(*advnctreetable.get_children())
+                for record in exam_data:
+                    advnctreetable.insert('', END, values=record[1:])  # Assuming marks start from index 2
+
+                # Update Labels with student data
+                getnameadvnce.config(text=student_data[1])  # Name
+                getsemesteradvnc.config(text=student_data[12])  # Semester
+                getdeptadvnc.config(text=student_data[13])  # Department
+                getintakeadvnc.config(text=student_data[14])  # Intake
+                getsecadvnc.config(text=student_data[15])  # Section
+                getcgpaadvnc.config(text=student_data[16])  # CGPA
+
+            except Exception as e:
+                messagebox.showerror('Error', f"An error occurred: {str(e)}")
+
+            '''try:
+                # Updated SQL query (check the actual column name in your schema)
+                query = 'SELECT * FROM examdata,studentdata WHERE examdata.id=studentdata.id AND examdata.id=%s'
+                mycursor.execute(query, (id,))  # Pass the ID parameter as a tuple
+
+                datas = mycursor.fetchall()
+                if datas:
+                    advnctreetable.delete(*advnctreetable.get_children())
+                    for i in datas:
+                        val = [i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9], i[10], i[11], i[12], i[13],[14]]
+                        advnctreetable.insert('', END, values=val)
+                else:
+                    messagebox.showinfo("No Data", "No records found for the given ID.")
+            except Exception as e:
+                messagebox.showerror('Error', f"An error occurred: {str(e)}")'''
 
         def advnceclearbutton():
-            pass
+            idval.set('')
+            getnameadvnce.config(text='')
+            getsemesteradvnc.config(text='')
+            getdeptadvnc.config(text='')
+            getintakeadvnc.config(text='')
+            getsecadvnc.config(text='')
+            getcgpaadvnc.config(text='')
 
         def advnceupdatebutton():
             pass
 
         def advncemarkenter():
-            pass
-
-
-
-
+            marksentrybutton_marks()
 
         advncroot = Toplevel()
         advncroot.grab_set()
@@ -933,95 +1004,93 @@ def examstudent():
         advncroot.resizable(False, False)
         advncroot.config(bg='light yellow')
 
-        downframe = Frame(advncroot,bg='light gray',relief=GROOVE,bd=3,borderwidth=5)
-        downframe.place(x=20,y=105,width=1560,height= 430)
+        downframe = Frame(advncroot, bg='light gray', relief=GROOVE, bd=3, borderwidth=5)
+        downframe.place(x=20, y=105, width=1560, height=430)
 
-
-
-        #################lebels advance veiw
-        idadvnce = Label(advncroot, text='ID No            :', font=('arial', 10, 'bold'), width=11, anchor='w',bg='light yellow')
+        ################# labels advance view
+        idadvnce = Label(advncroot, text='ID No            :', font=('arial', 10, 'bold'), width=11, anchor='w',
+                         bg='light yellow')
         idadvnce.place(x=1120, y=20)
 
         idadvnce = Entry(advncroot, font=('arial', 13), bd=2, width=13, bg='light blue', textvariable=idval)
         idadvnce.place(x=1220, y=20)
 
         nameadvnce = Label(advncroot, text='Name           :', font=('arial', 10, 'bold'), width=11, anchor='w',
-                    bg='light yellow', borderwidth=3)
+                           bg='light yellow', borderwidth=3)
         nameadvnce.place(x=20, y=15)
 
-        getnameadvnce = Label(advncroot, text='shahriar kabir moon', font=('arial', 10, 'bold'), width=30, anchor='w', bg='light yellow', borderwidth=3)
+        getnameadvnce = Label(advncroot, text='', font=('arial', 10, 'bold'), width=30, anchor='w', bg='light yellow',
+                              borderwidth=3)
         getnameadvnce.place(x=115, y=15)
 
-        semesteradvnc = Label(advncroot, text='Semester       :', font=('arial', 10, 'bold'), width=11, anchor='w', bg='light yellow')
+        semesteradvnc = Label(advncroot, text='semester       :', font=('arial', 10, 'bold'), width=11, anchor='w',
+                              bg='light yellow')
         semesteradvnc.place(x=280, y=15)
 
-        getsemesteradvnc = Label(advncroot, text='spring 2024', font=('arial', 10, 'bold'), width=11, anchor='w',
-                              bg='light yellow')
+        getsemesteradvnc = Label(advncroot, text='', font=('arial', 10, 'bold'), width=11, anchor='w',
+                                 bg='light yellow')
         getsemesteradvnc.place(x=380, y=15)
 
         deptadvnc = Label(advncroot, text='Dept. name  :', font=('arial', 10, 'bold'), width=11, anchor='w',
-                              bg='light yellow')
+                          bg='light yellow')
         deptadvnc.place(x=540, y=15)
 
-        getdeptadvnc = Label(advncroot, text='cse', font=('arial', 10, 'bold'), width=11, anchor='w', bg='light yellow')
+        getdeptadvnc = Label(advncroot, text='', font=('arial', 10, 'bold'), width=11, anchor='w', bg='light yellow')
         getdeptadvnc.place(x=640, y=15)
 
-        intakeadvnc = Label(advncroot, text='Intake           :', font=('arial', 10, 'bold'), width=11, anchor='w', bg='light yellow')
+        intakeadvnc = Label(advncroot, text='intake           :', font=('arial', 10, 'bold'), width=11, anchor='w',
+                            bg='light yellow')
         intakeadvnc.place(x=20, y=50)
 
-        getintakeadvnc = Label(advncroot, text='51', font=('arial', 10, 'bold'), width=11, anchor='w',
-                            bg='light yellow')
+        getintakeadvnc = Label(advncroot, text='', font=('arial', 10, 'bold'), width=11, anchor='w', bg='light yellow')
         getintakeadvnc.place(x=120, y=50)
 
         secadvnc = Label(advncroot, text='Section          :', font=('arial', 10, 'bold'), width=11, anchor='w',
-                          bg='light yellow')
+                         bg='light yellow')
         secadvnc.place(x=280, y=50)
 
-        getsecadvnc = Label(advncroot, text='13', font=('arial', 10, 'bold'), width=11, anchor='w',
-                         bg='light yellow')
+        getsecadvnc = Label(advncroot, text='', font=('arial', 10, 'bold'), width=11, anchor='w', bg='light yellow')
         getsecadvnc.place(x=380, y=50)
 
-        cgpaadvnc = Label(advncroot, text='CGPA           :', font=('arial', 10, 'bold'), width=11, anchor='w',
+        cgpaadvnc = Label(advncroot, text='cgpa           :', font=('arial', 10, 'bold'), width=11, anchor='w',
                           bg='light yellow')
         cgpaadvnc.place(x=540, y=50)
 
-        getcgpaadvnc = Label(advncroot, text='3.97', font=('arial', 10, 'bold'), width=11, anchor='w',
-                          bg='light yellow')
+        getcgpaadvnc = Label(advncroot, text='', font=('arial', 10, 'bold'), width=11, anchor='w', bg='light yellow')
         getcgpaadvnc.place(x=640, y=50)
 
-        searchbuttonadvnce = Button(advncroot, text='Search', font=('arial', 10, 'bold'), bg='gold2', bd=3, relief=RIDGE,
-                              borderwidth=3, width=11, height=1, command=searchbutton_search)
+        searchbuttonadvnce = Button(advncroot, text='Search', font=('arial', 10, 'bold'), bg='gold2', bd=3,
+                                    relief=RIDGE, borderwidth=3, width=11, height=1, command=advncesearchbutton)
         searchbuttonadvnce.place(x=1370, y=16)
 
-
         advncclearbutton = Button(advncroot, text='Clear', font=('arial', 10, 'bold'), bg='gold2', bd=3, relief=RIDGE,
-                              borderwidth=3, width=11, height=1, command=advnceclearbutton)
+                                  borderwidth=3, width=11, height=1, command=advnceclearbutton)
         advncclearbutton.place(x=1490, y=16)
 
         advncemarkbutton = Button(advncroot, text='Enter Total Marks', font=('arial', 10, 'bold'), bg='gold2', bd=3,
-                                    relief=RIDGE,
-                                    borderwidth=3, width=14, height=1,command=advncemarkenter)
+                                  relief=RIDGE, borderwidth=3, width=14, height=1, command=advncemarkenter)
         advncemarkbutton.place(x=1220, y=60)
 
         advnceupdatebutton = Button(advncroot, text='Update Marks', font=('arial', 10, 'bold'), bg='gold2', bd=3,
-                                    relief=RIDGE,
-                                    borderwidth=3, width=11, height=1, command=advnceupdatebutton)
+                                    relief=RIDGE, borderwidth=3, width=11, height=1, command=advnceupdatebutton)
         advnceupdatebutton.place(x=1370, y=60)
 
         advncecancelbutton = Button(advncroot, text='Cancel', font=('arial', 10, 'bold'), bg='gold2', bd=3,
-                                    relief=RIDGE,
-                                    borderwidth=3, width=11, height=1, command=searchbutton_search)
+                                    relief=RIDGE, borderwidth=3, width=11, height=1, command=advnceclearbutton)
         advncecancelbutton.place(x=1490, y=60)
 
         style = ttk.Style()
         style.configure('Treeview.Heading', font=('times', 13, 'normal'), foreground='black', background='ash')
-        style.configure('Treeview', font=('times', 12, 'bold'), foreground='black', background='cyan')
+        style.configure('Treeview', font=('times', 12, 'bold'), foreground='black', background='light green')
         scroll_x = Scrollbar(downframe, orient=HORIZONTAL)
         scroll_y = Scrollbar(downframe, orient=VERTICAL)
         scroll_x.pack(side=BOTTOM, fill=X)
         scroll_y.pack(side=RIGHT, fill=Y)
 
-        advnctreetable= Treeview(downframe,columns=('Course Title','Attendance mark','Assignment 1','Assignment 2','Average Assignment','Class Test 1(CT-1)','Class Test 2(CT-2)','Class Test 3(CT-3)','Average CT Mark','Presentation Mark','Average Class Performance','Mid Term','Final','Grade'),yscrollcommand= scroll_y.set, xscrollcommand= scroll_x.set)
+        advnctreetable = Treeview(downframe, columns=(
+            'Course Title', 'Attendance mark', 'Assignment 1', 'Assignment 2', 'avg_assignment', 'Class Test 1(CT-1)',
+            'Class Test 2(CT-2)', 'Class Test 3(CT-3)', 'avg_ct', 'Presentation Mark', 'avg_class_per',
+            'Mid Term', 'Final', 'Grade'), yscrollcommand=scroll_y.set, xscrollcommand=scroll_x.set)
         scroll_x.config(command=advnctreetable.xview)
         scroll_y.config(command=advnctreetable.yview)
 
@@ -1029,13 +1098,13 @@ def examstudent():
         advnctreetable.heading('Attendance mark', text='Attendance mark')
         advnctreetable.heading('Assignment 1', text='Assignment 1')
         advnctreetable.heading('Assignment 2', text='Assignment 2')
-        advnctreetable.heading('Average Assignment', text='Avg Assignment')
+        advnctreetable.heading('avg_assignment', text='Avg Assignment')
         advnctreetable.heading('Class Test 1(CT-1)', text='CT-1')
         advnctreetable.heading('Class Test 2(CT-2)', text='CT-2')
         advnctreetable.heading('Class Test 3(CT-3)', text='CT-3')
-        advnctreetable.heading('Average CT Mark', text='Avg CT')
+        advnctreetable.heading('avg_ct', text='Avg CT')
         advnctreetable.heading('Presentation Mark', text='Presentation')
-        advnctreetable.heading('Average Class Performance', text='Avg Class Performance(30)')
+        advnctreetable.heading('avg_class_per', text='Avg Class Performance(30)')
         advnctreetable.heading('Mid Term', text='Mid Term (30)')
         advnctreetable.heading('Final', text='Final (40)')
         advnctreetable.heading('Grade', text='GPA')
@@ -1046,29 +1115,192 @@ def examstudent():
         advnctreetable.column('Attendance mark', width=40)
         advnctreetable.column('Assignment 1', width=40)
         advnctreetable.column('Assignment 2', width=40)
-        advnctreetable.column('Average Assignment', width=40)
+        advnctreetable.column('avg_assignment', width=40)
         advnctreetable.column('Class Test 1(CT-1)', width=40)
         advnctreetable.column('Class Test 2(CT-2)', width=40)
         advnctreetable.column('Class Test 3(CT-3)', width=40)
-        advnctreetable.column('Average CT Mark', width=40)
+        advnctreetable.column('avg_ct', width=40)
         advnctreetable.column('Presentation Mark', width=40)
-        advnctreetable.column('Average Class Performance', width=40)
+        advnctreetable.column('avg_class_per', width=40)
         advnctreetable.column('Mid Term', width=40)
         advnctreetable.column('Final', width=40)
         advnctreetable.column('Grade', width=40)
 
         advnctreetable.pack(fill=BOTH, expand=1)
-
         advncroot.mainloop()
-
     def searchbutton_search():
         pass
+
     def marksentrybutton_marks():
+        def searchmark_button():
+            try:
+                id = idval.get()
+                if id:
+                    str1 = 'SELECT * FROM studentdata WHERE id=%s'
+                    mycursor.execute(str1, (id,))
+                    student_data = mycursor.fetchone()
+
+                    if student_data:
+                        # Populate name in the entry box
+                        namemarkentry.config(state='normal')
+                        namemarkentry.delete(0, END)
+                        namemarkentry.insert(0, student_data[1])  # Assuming name is at index 1
+                        namemarkentry.config(state='readonly')
+                    else:
+                        messagebox.showerror('Error', 'Student not found for the given ID')
+                else:
+                    messagebox.showwarning('Input Error', 'Please enter an ID to search')
+            except Exception as e:
+                messagebox.showerror('Error', f'Could not fetch data: {str(e)}')
+
+        def save_marks():
+            global avg_ct, avg_assignment, avg_class_per, grade
+            try:
+                # Collect values
+                id = idval.get()
+                course_title = coursetitleval.get()
+                attendance = attendanceval.get()
+                assignment1 = assignment1val.get()
+                assignment2 = assignment2val.get()
+                ct1 = ct1val.get()
+                ct2 = ct2val.get()
+                ct3 = ct3val.get()
+                presentation = presentationval.get()
+                midterm = midtermval.get()
+                final = finalval.get()
+
+                try:
+                    avg_ct = (float(ct1val.get()) + float(ct2val.get()) + float(ct3val.get())) / 3
+                    avg_assignment = (float(assignment1val.get()) + float(assignment2val.get())) / 2
+                    avg_class_per = avg_ct + avg_assignment + float(attendanceval.get()) + float(presentation)
+                    total_marks = avg_class_per + float(midtermval.get()) + float(finalval.get())
+
+                    if total_marks >= 90:
+                        grade = 'A+'
+                    elif total_marks >= 80:
+                        grade = 'A'
+                    elif total_marks >= 70:
+                        grade = 'B+'
+                    elif total_marks >= 60:
+                        grade = 'B'
+                    elif total_marks >= 50:
+                        grade = 'C'
+                    elif total_marks >= 40:
+                        grade = 'D'
+                    else:
+                        grade = 'F'
+                    print(avg_ct, avg_assignment, avg_class_per, grade)
+                except ValueError:
+                    messagebox.showerror("Input Error", "Please ensure all marks are valid numbers.")
+
+                # Query for database insertion
+                # Query for database insertion
+                query = """
+                    INSERT INTO examdata (id, course_title, attendance, assignment1, assignment2, avg_assignment, ct1, ct2, ct3, 
+                        avg_ct, presentation, avg_class_per, midterm, final, grade)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ON DUPLICATE KEY UPDATE
+                        attendance=VALUES(attendance), assignment1=VALUES(assignment1), assignment2=VALUES(assignment2), 
+                        avg_assignment=VALUES(avg_assignment), ct1=VALUES(ct1), ct2=VALUES(ct2), ct3=VALUES(ct3), 
+                        avg_ct=VALUES(avg_ct), presentation=VALUES(presentation), avg_class_per=VALUES(avg_class_per), 
+                        midterm=VALUES(midterm), final=VALUES(final), grade=VALUES(grade)
+                """
+                values = (id, course_title, attendance, assignment1, assignment2, avg_assignment, ct1, ct2, ct3, avg_ct,
+                          presentation,
+                          avg_class_per, midterm, final, grade)
+                mycursor.execute(query, values)
+                con.commit()
+                messagebox.showinfo("Success", "Marks saved successfully!")
+
+            except Exception as e:
+                # Show error
+                messagebox.showerror('Error', f"An error occurred: {e}", parent=advncexamroot)
+            '''try:
+                
+            
+                if not id:
+                    messagebox.showwarning("Input Error", "Please search for a valid ID first.")
+                    return
+
+                if not course_title:
+                    messagebox.showwarning("Input Error", "Course Title is required.")
+                    return
+
+                # Update marks in the database
+                str2 = """UPDATE studentdata
+                          SET attendance=%s, assignment1=%s, assignment2=%s, ct1=%s, ct2=%s, ct3=%s,avg_ct=%s,avg_assignment=%s,avg_class_per=%s,
+                              presentation=%s, midterm=%s, final=%s, course_title=%s,grade=%s
+                          WHERE id=%s"""
+                mycursor.execute(str2, (attendance, assignment1, assignment2, ct1, ct2, ct3,avg_ct,avg_assignment,avg_class_per,
+                                        presentation, midterm, final, course_title,grade, id))
+                con.commit()
+                messagebox.showinfo("Success", "Marks updated successfully!")
+                advncexamroot.destroy()
+            except Exception as e:
+                messagebox.showerror('Error', f'Could not save marks: {str(e)}')'''
+
+        # Create the advanced exam root window
         advncexamroot = Toplevel()
         advncexamroot.grab_set()
         advncexamroot.geometry('500x600+500+50')
         advncexamroot.resizable(False, False)
         advncexamroot.config(bg='light yellow')
+
+        # Widgets
+        idmarklabel = Label(advncexamroot, text='ID:', font=('arial', 10, 'bold'), width=11, anchor='w',
+                            bg='light yellow')
+        idmarklabel.place(x=20, y=15)
+
+        idmarkentry = Entry(advncexamroot, font=('arial', 13), bd=2, width=13, bg='light blue', textvariable=idval)
+        idmarkentry.place(x=100, y=15)
+
+        searchbuttonmark = Button(advncexamroot, text='Search', font=('arial', 10, 'bold'), bg='gold2', bd=3,
+                                  relief=RIDGE, borderwidth=3, width=11, height=1, command=searchmark_button)
+        searchbuttonmark.place(x=250, y=12)
+
+        namemarklabel = Label(advncexamroot, text='Name:', font=('arial', 10, 'bold'), width=11, anchor='w',
+                              bg='light yellow')
+        namemarklabel.place(x=20, y=50)
+
+        namemarkentry = Entry(advncexamroot, font=('arial', 13), bd=2, width=30, bg='light blue')
+        namemarkentry.place(x=100, y=50)
+        namemarkentry.config(state='readonly')
+
+        # Define variables
+        coursetitleval = StringVar()
+        attendanceval = StringVar()
+        assignment1val = StringVar()
+        assignment2val = StringVar()
+        ct1val = StringVar()
+        ct2val = StringVar()
+        ct3val = StringVar()
+        presentationval = StringVar()
+        midtermval = StringVar()
+        finalval = StringVar()
+
+
+        # Labels and entry fields for marks
+        fields = [
+            ("Course Title:", coursetitleval, 100),
+            ("Assignment 1:", assignment1val, 140),
+            ("Assignment 2:", assignment2val, 180),
+            ("CT- 1:", ct1val, 220),
+            ("CT- 2:", ct2val, 260),
+            ("CT- 3:", ct3val, 300),
+            ("Presentation:", presentationval, 340),
+            ("Midterm:", midtermval, 380),
+            ("Final:", finalval, 420),
+            ("Attendance:", attendanceval, 460),
+        ]
+
+        for label_text, var, y_pos in fields:
+            label = Label(advncexamroot, text=label_text, bg="light yellow", anchor="w")
+            label.place(x=20, y=y_pos)
+            entry = Entry(advncexamroot, textvariable=var)
+            entry.place(x=150, y=y_pos)
+        # Save Button
+        Button(advncexamroot, text='Save Marks', font=('arial', 10, 'bold'), bg='gold2', bd=3,
+               relief=RIDGE, borderwidth=3, width=11, height=1, command=save_marks).place(x=180, y=500)
 
         advncexamroot.mainloop()
 
@@ -1087,8 +1319,7 @@ def examstudent():
     welcomesearchstudentlabel = Label(examroot, text='Search Student Details', font=('chiller', 36, 'bold'),
                                       bg='light yellow').pack(side=TOP, pady=5)
     # welcomesearchstudentlabel.place(x=450,y=10)
-
-    ###################examroot search students label
+###################examroot search students label
 
     leftFrame = Frame(examroot, bg='light yellow', bd=3, relief=GROOVE, borderwidth=5)
     leftFrame.place(x=20, y=80, width=330, height=440)
@@ -1202,10 +1433,36 @@ def ConnectDB():
                     religion VARCHAR(20),
                     personal_phn_no VARCHAR(30),
                     email VARCHAR(100),
-                    blood_group VARCHAR(10)
+                    blood_group VARCHAR(10),
+                    semester VARCHAR(10),
+                    department VARCHAR(50),
+                    intake VARCHAR(10),
+                    section VARCHAR(10),
+                    cgpa FLOAT
+                    
                 )
             '''
+            str3 = '''
+                            CREATE TABLE IF NOT EXISTS examdata(
+                                id INT(20),
+                                course_title VARCHAR(50) NOT NULL PRIMARY KEY,
+                                attendance VARCHAR(10),
+                                assignment1 VARCHAR(10),
+                                assignment2 VARCHAR(10),
+                                avg_assignment FLOAT,
+                                ct1 VARCHAR(10),
+                                ct2 VARCHAR(10),
+                                ct3 VARCHAR(10),
+                                avg_ct FLOAT,
+                                presentation VARCHAR(10),
+                                avg_class_per FLOAT,
+                                midterm VARCHAR(10),
+                                final VARCHAR(10),
+                                grade VARCHAR(10)
+                            )
+                        '''
             mycursor.execute(str1)
+            mycursor.execute(str3)
             con.commit()
             messagebox.showerror('notification','database has connected successfully',parent= dbroot)
 
@@ -1361,13 +1618,13 @@ addlabel = Label(root, text= 'Update Student', font=('chiller', 23,'bold'))
 addlabel.place(x=752,y=250)
 
 ## show all details
-img5 = Image.open(r"icons/show details.png")
+img5 = Image.open(r"icons/club_3990999.png")
 img5 = img5.resize((120, 120), Image._initialized)
-showstudentphoto = ImageTk.PhotoImage(img5)
+showclubdetails = ImageTk.PhotoImage(img5)
 
-showstudentbutton = Button(root, image=showstudentphoto, width=120, height=120,command=showstudent, relief=GROOVE, borderwidth=4,activebackground='red')
-showstudentbutton.place(x=105, y=320)
-addlabel = Label(root, text= 'Show Student Details', font=('chiller', 23,'bold'))
+clubdetailsbutton = Button(root, image=showclubdetails, width=120, height=120,command=showstudent, relief=GROOVE, borderwidth=4,activebackground='red')
+clubdetailsbutton.place(x=105, y=320)
+addlabel = Label(root, text= 'Club Details', font=('chiller', 23,'bold'))
 addlabel.place(x=62,y=450)
 
 ## enter student marks
@@ -1379,6 +1636,17 @@ enterexamstudentbutton = Button(root, image=enterexamstudentphoto, width=120,com
 enterexamstudentbutton.place(x=325, y=320)
 addlabel = Label(root, text= 'Exam Details', font=('chiller', 23,'bold'))
 addlabel.place(x=323,y=450)
+
+## attendence management
+img7 = Image.open(r"icons/attendance_6612108.png")
+img7 = img7.resize((120, 120), Image._initialized)
+attendancephoto = ImageTk.PhotoImage(img7)
+
+attendstudentbutton = Button(root, image=attendancephoto, width=120, height=120, relief=GROOVE, borderwidth=4,activebackground='red')
+attendstudentbutton.place(x=545, y=320)
+addlabel = Label(root, text= 'Attendance', font=('chiller', 23,'bold'))
+addlabel.place(x=532,y=450)
+
 
 #######################################show student data
 
@@ -1392,6 +1660,8 @@ exitstudentbutton = Button(root, image=exitstudentphoto, width=120, height=120, 
 exitstudentbutton.place(x=765, y=320)
 addlabel = Label(root, text= 'EXIT', font=('chiller', 23,'bold'),width=10)
 addlabel.place(x=767,y=450)
+
+
 
 #############################
 root.mainloop()
