@@ -1168,6 +1168,7 @@ def examstudent():
                 presentation = presentationval.get()
                 midterm = midtermval.get()
                 final = finalval.get()
+                
 
                 try:
                     avg_ct = (float(ct1val.get()) + float(ct2val.get()) + float(ct3val.get())) / 3
@@ -1316,7 +1317,7 @@ def examstudent():
     examroot.resizable(False, False)
     examroot.config(bg='light yellow')
 
-    welcomesearchstudentlabel = Label(examroot, text='Search Student Details', font=('chiller', 36, 'bold'),
+    welcomesearchstudentlabel = Label(examroot, text='Examination management', font=('chiller', 36, 'bold'),
                                       bg='light yellow').pack(side=TOP, pady=5)
     # welcomesearchstudentlabel.place(x=450,y=10)
 ###################examroot search students label
@@ -1407,8 +1408,8 @@ def ConnectDB():
         #user= userval.get()
         #password= passwordval.get()
 
-        host='localhost'
         user='root'
+        host='localhost'
         password='02140731'
         try:
             con= pymysql.connect(host= host,user= user, password=password)
@@ -1660,6 +1661,7 @@ exitstudentbutton = Button(root, image=exitstudentphoto, width=120, height=120, 
 exitstudentbutton.place(x=765, y=320)
 addlabel = Label(root, text= 'EXIT', font=('chiller', 23,'bold'),width=10)
 addlabel.place(x=767,y=450)
+
 
 
 
